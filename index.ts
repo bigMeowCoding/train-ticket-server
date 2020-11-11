@@ -18,6 +18,20 @@ app.get("/api/getCities", (req, res) => {
     });
   });
 });
+app.get("/api/query", (req, res) => {
+  fs.readFile("./res/query.json", "utf8", (err, result) => {
+    if (err) {
+      res.send(err);
+      return;
+    }
+    const data = JSON.parse(result);
+    data.dataMap.directTrainInfo.trains = data.dataMap.directTrainInfo.trains.reverse();
+    res.json({
+      code: 0,
+      data: data,
+    });
+  });
+});
 app.get("/api/search", (req, res) => {
   // @ts-ignore
   const { key } = req.query;
