@@ -19,13 +19,22 @@ app.get("/api/getCities", (req, res) => {
   });
 });
 app.get("/api/query", (req, res) => {
+  const { date } = req.query;
   fs.readFile("./res/query.json", "utf8", (err, result) => {
     if (err) {
       res.send(err);
       return;
     }
     const data = JSON.parse(result);
-    data.dataMap.directTrainInfo.trains = data.dataMap.directTrainInfo.trains.reverse();
+    let trains = data.dataMap.directTrainInfo.trains;
+    trains = trains.reverse();
+    if (date) {
+      trains = trains.filter((train: any) => {
+
+        return train.date === date;
+      });
+    }
+    data.dataMap.directTrainInfo.trains = trains;
     res.json({
       code: 0,
       data: data,
