@@ -1,9 +1,6 @@
 import express from "express";
 import * as fs from "fs";
-import { TrainOrder } from "./src/common/interface/config";
 import { Train } from "./src/common/interface/entity";
-import computeDuration from "./src/common/utils/computeDuration";
-import computeTimeInSameDay from "./src/common/utils/computeTimeInSameDay";
 import parseTrainsData from "./src/common/utils/parseTrainsData";
 
 const app = express();
