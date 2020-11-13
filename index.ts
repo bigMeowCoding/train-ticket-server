@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import addTimesOfDate from "./src/common/utils/addTimesOfDate";
 import getDayAfter from "./src/common/utils/getDayAfter";
 import computeDuration from "./src/common/utils/computeDuration";
+import computeTimeInSameDay from "./src/common/utils/computeTimeInSameDay";
 const app = express();
 app.get("/", (req, res) => {
   res.send("hello express");
@@ -41,9 +42,12 @@ app.get("/api/query", (req, res) => {
     }
     if (orderType) {
       if (parseInt(orderType as string) === TrainOrder.DURATION) {
-        console.log("begin sort");
         trains.sort((a, b) => {
           return computeDuration(a) - computeDuration(b);
+        });
+      } else if (parseInt(orderType as string) === TrainOrder.DEPART) {
+        trains.sort((a, b) => {
+          return computeTimeInSameDay(a.aTime, b.aTime);
         });
       }
     }
