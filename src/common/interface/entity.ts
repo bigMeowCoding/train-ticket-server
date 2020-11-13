@@ -1,3 +1,5 @@
+import {TrainOrder} from "./config";
+
 export interface Train {
   endStationCode: "AOH";
   remainTicketCount: 0;
@@ -97,4 +99,10 @@ export interface Train {
   arrStationCode: "NKH";
   sortGroup: 0;
   remainTicketBackgroundColor: 0;
+}
+
+
+export interface ParseTrainOption {
+  date:string,
+  orderType:TrainOrder
 }

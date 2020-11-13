@@ -2,16 +2,17 @@ import express from "express";
 import * as fs from "fs";
 import { TrainOrder } from "./src/common/interface/config";
 import { Train } from "./src/common/interface/entity";
-import dayjs from "dayjs";
-import addTimesOfDate from "./src/common/utils/addTimesOfDate";
-import getDayAfter from "./src/common/utils/getDayAfter";
 import computeDuration from "./src/common/utils/computeDuration";
 import computeTimeInSameDay from "./src/common/utils/computeTimeInSameDay";
+import parseTrainsData from "./src/common/utils/parseTrainsData";
+
 const app = express();
+
 app.get("/", (req, res) => {
   res.send("hello express");
   res.end();
 });
+
 app.get("/api/getCities", (req, res) => {
   fs.readFile("./res/cities.json", "utf8", (err, data) => {
     if (err) {
@@ -24,6 +25,7 @@ app.get("/api/getCities", (req, res) => {
     });
   });
 });
+
 app.get("/api/query", (req, res) => {
   let { date, orderType } = req.query;
   fs.readFile("./src/res/query.json", "utf8", (err, result) => {
@@ -31,26 +33,12 @@ app.get("/api/query", (req, res) => {
       res.send(err);
       return;
     }
-    console.log("orderType", orderType);
     const data = JSON.parse(result);
     let trains: Train[] = data.dataMap.directTrainInfo.trains;
-    trains = trains.reverse();
-    if (date) {
-      trains = trains.filter((train: any) => {
-        return train.date === date;
-      });
-    }
-    if (orderType) {
-      if (parseInt(orderType as string) === TrainOrder.DURATION) {
-        trains.sort((a, b) => {
-          return computeDuration(a) - computeDuration(b);
-        });
-      } else if (parseInt(orderType as string) === TrainOrder.DEPART) {
-        trains.sort((a, b) => {
-          return computeTimeInSameDay(a.aTime, b.aTime);
-        });
-      }
-    }
+    trains = parseTrainsData(trains, {
+      date: date as string,
+      orderType: parseInt(orderType as string),
+    });
     data.dataMap.directTrainInfo.trains = trains;
     res.json({
       code: 0,
@@ -58,6 +46,7 @@ app.get("/api/query", (req, res) => {
     });
   });
 });
+
 app.get("/api/search", (req, res) => {
   // @ts-ignore
   const { key } = req.query;

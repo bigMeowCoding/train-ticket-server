@@ -1,6 +1,6 @@
 import addTimesOfDate from "./addTimesOfDate";
 import dayjs from "dayjs";
-import trains from "./trains";
+import trains from "../config/trains";
 import computeDuration from "./computeDuration";
 import { Train } from "../interface/entity";
 
